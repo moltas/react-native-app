@@ -1,38 +1,56 @@
 {
-  "expo": {
-    "name": "react-native-app",
-    "slug": "react-native-app",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
-    "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.reactnativeapp"
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "com.anonymous.reactnativeapp"
-    },
-    "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
-    },
-    "plugins": [
-      "expo-router"
-    ],
-    "experiments": {
-      "typedRoutes": true
+    "expo": {
+        "name": "react-native-app",
+        "slug": "react-native-app",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "./assets/images/icon.png",
+        "scheme": "myapp",
+        "userInterfaceStyle": "automatic",
+        "splash": {
+            "image": "./assets/images/splash.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#ffffff"
+        },
+        "ios": {
+            "supportsTablet": true,
+            "bundleIdentifier": "com.anonymous.reactnativeapp",
+            "infoPlist": {
+                "NSHealthShareUsageDescription": "Read and understand health data",
+                "NSHealthUpdateUsageDescription": "Share workout data with other apps."
+            }
+        },
+        "android": {
+            "adaptiveIcon": {
+                "foregroundImage": "./assets/images/adaptive-icon.png",
+                "backgroundColor": "#ffffff"
+            },
+            "package": "com.anonymous.reactnativeapp"
+        },
+        "web": {
+            "bundler": "metro",
+            "output": "static",
+            "favicon": "./assets/images/favicon.png"
+        },
+        "plugins": [
+            "expo-router",
+            [
+                "react-native-health",
+                {
+                    "healthSharePermission": "Custom health share permission",
+                    "healthUpdatePermission": "Custom health update permission"
+                }
+            ],
+            [
+                "@rnmapbox/maps",
+                {
+                    "RNMapboxMapsVersion": "11.4.0",
+                    "RNMapboxMapsDownloadToken": "sk.eyJ1IjoidG9iaWZ5IiwiYSI6ImNseTRmdmZpejAyam0yanNjNzlpcDB2YncifQ.igBq5ReX1lzRymedT-d-Zg"
+                }
+            ]
+        ],
+        "experiments": {
+            "typedRoutes": true
+        }
     }
-  }
 }

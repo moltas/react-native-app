@@ -3,12 +3,18 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTLinkingManager.h>
 #import <GoogleMaps/GoogleMaps.h>
+#import "RCTAppleHealthKit.h"
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  [GMSServices provideAPIKey:@"AIzaSyC7Qdnnsjl0CSDJbzvZOZdfW-jrMUWkh9s"]; // GOOGLE MAPS
+  [GMSServices provideAPIKey:@"{SECRET}}"]; // GOOGLE MAPS
+
+  RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
+
+  /* Add Background initializer for HealthKit  */
+  [[RCTAppleHealthKit new] initializeBackgroundObservers:bridge];
 
   self.moduleName = @"main";
 

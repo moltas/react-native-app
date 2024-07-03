@@ -1,72 +1,61 @@
 import { View, Text, Dimensions, Touchable, Button } from "react-native";
+import { LegacyRef, useEffect, useMemo, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import MapView, { Camera, Marker } from "react-native-maps";
-import appleHealthKit from "react-native-health";
+import MapView, { Camera, Marker, Polyline } from "react-native-maps";
+// import MapViewDirections from "react-native-maps-directions";
+import polyline from "@mapbox/polyline";
+
+import AppleHealthkit, { HealthValue, HealthKitPermissions, AppleHealthKit } from "react-native-health";
 
 import mapStyling from "./map-styling.json";
-import { LegacyRef, useEffect, useRef } from "react";
+
+import Config from "react-native-config";
+import RaceMap from "./RaceMap";
 
 // show a start and finish point
 // zoom in so those points are in view
 
-export default function HomeScreen() {
-    const mapRef = useRef<MapView>(null);
+let appleHealthkit: AppleHealthKit | null = AppleHealthkit;
 
-    let LATITUDE_DELTA = 0;
-    let LONGITUDE_DELTA = 0;
+const permissions = {
+    permissions: {
+        write: [appleHealthkit.Constants.Permissions.StepCount, appleHealthkit.Constants.Permissions.DistanceWalkingRunning],
+        read: [appleHealthkit.Constants.Permissions.StepCount, appleHealthkit.Constants.Permissions.DistanceWalkingRunning],
+    },
+} as HealthKitPermissions;
+
+// appleHealthkit.isAvailable((err, available) => {
+//     if (err) {
+//         console.log("error initializing Healthkit: ", err);
+//         return;
+//     }
+
+//     appleHealthkit.initHealthKit(permissions, (error: string) => {
+//         if (error) {
+//             console.log("[ERROR] Cannot grant permissions!");
+//         }
+//     });
+// });
+
+export default function HomeScreen() {
+    const [raceDistance, setRaceDistance] = useState<number>();
+    const [walkingDistance, setWalkingDistance] = useState<number>(Math.floor(Math.random() * 72));
+    const [stepsCount, setStepsCount] = useState<number>(0);
 
     const window = Dimensions.get("window");
     const { width, height } = window;
-    LONGITUDE_DELTA = LATITUDE_DELTA * (width / height);
 
-    const stockholmPos: Position = {
-        latitude: 59.3251172,
-        longitude: 18.0710935,
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA,
-    };
-
-    const uppsalaPos: Position = {
-        latitude: 59.8586126,
-        longitude: 17.6387436,
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA,
-    };
-
-    useEffect(() => {
-        if (mapRef) {
-            mapRef.current?.animateCamera({
-                zoom: 8,
-                altitude: 8,
-                center: { latitude: stockholmPos.latitude, longitude: stockholmPos.longitude },
-            });
-        }
-
-        // const coords = predictions.map((element) => {
-        //     return {
-        //       latitude: element.coordinates.latitude,
-        //       longitude: element.coordinates.longitude,
-        //     };
-        //   });
-
-        //   this.mapRef.fitToCoordinates(coords, {
-        //     edgePadding: {
-        //       bottom: 200,
-        //       right: 50,
-        //       top: 150,
-        //       left: 50,
-        //     },
-        //     animated: true,
-        //   });
-    }, []);
+    const userPosition = useMemo(() => {}, [walkingDistance, raceDistance]);
 
     return (
-        <SafeAreaView className="bg-black h-full">
-            <View className="flex-1 items-center justify-center bg-blue">
-                <MapView className="w-full h-full" customMapStyle={mapStyling} provider="google" ref={mapRef} showsUserLocation>
-                    <Marker coordinate={stockholmPos} title={"start"} />
-                    <Marker coordinate={uppsalaPos} title={"finish"} />
-                </MapView>
+        <SafeAreaView className="h-full">
+            <View className="flex-1 flex-col direct items-center justify-center bg-blue">
+                <View className="bg-green-400 p-4 w-full flex-col">
+                    <Text className="text-center">Distance: {raceDistance} km</Text>
+                    <Text className="text-center">Steps: {stepsCount}</Text>
+                    <Text className="text-center">Walking distance: {walkingDistance} km</Text>
+                </View>
+                <RaceMap origin={"Ystad"} destination={"Haparanda"} userStepsCount={22000} />
             </View>
         </SafeAreaView>
     );
